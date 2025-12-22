@@ -6,7 +6,7 @@
       <section class="form_box">
         <section class="flex-element">
           <h2>Skontaktuj się ze mną</h2>
-          <form action="upload" method="POST" id="form_section">
+          <form action="/upload" method="POST" id="form_section">
             <label for="name">Twoje imię</label>
             <input type="text" id="name" name="name"/>
 

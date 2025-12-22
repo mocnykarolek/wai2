@@ -19,6 +19,7 @@ function dispatch($routing, $action_url) {
         $function_name = $routing[$action_url];
         $function_name(); 
     } else {
+        echo $action_url;
         http_response_code(404);
         echo "<h1>Błąd 404 - Strona nie istnieje</h1>";
     }
