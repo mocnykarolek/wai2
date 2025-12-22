@@ -1,0 +1,9 @@
+Options +FollowSymLinks
+RewriteEngine On
+
+# Jeśli żądanie dotyczy istniejącego pliku lub folderu - nie rób nic (serwuj go)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# W każdym innym przypadku przekieruj wszystko do index.php
+RewriteRule ^ index.php [QSA,L]
