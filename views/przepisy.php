@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="../web/styles/przepisy.css" />
+<link rel="stylesheet" href="styles/przepisy.css" />
 <main>
       <section class="recipe-list">
         <table id="tabela">

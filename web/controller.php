@@ -33,7 +33,6 @@ function recipes_controller() {
 
 // Funkcja obsługująca wysyłanie zdjęć (logikę dodamy za chwilę)
 function upload_controller() {
-    echo "nig";
-    // var_dump($_POST);
-    // require_once 'views/upload_view.php';
+
+    require_once '../views/upload_view.php';
 }

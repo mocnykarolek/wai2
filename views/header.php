@@ -22,7 +22,7 @@
   </head>
   <body>
     <header class="header_class">
-      <a href="home">
+      <a href="/home">
         <div class="logo">
           <img src="images/logo.png" alt="Logo" width="500" height="500" />
         </div>
@@ -30,11 +30,11 @@
 
       <nav class="nav-bar">
         <ul class="nav-links">
-          <li><a href="recipes">Przepisy</a></li>
-          <li><a href="gallery">Galeria</a></li>
-          <li><a href="aboutme">O mnie</a></li>
+          <li><a href="/recipes">Przepisy</a></li>
+          <li><a href="/gallery">Galeria</a></li>
+          <li><a href="/aboutme">O mnie</a></li>
         </ul>
       </nav>
 
-      <a class="button1" href="form">Kontakt</a>
+      <a class="button1" href="/form">Kontakt</a>
     </header>
