@@ -1,6 +1,14 @@
 <link rel="stylesheet" href="styles/galeria.css" />
 <main>
         <h2>Galeria inspiracji</h2>
+        <section class="flexContainer">
+        <form action="/addPhoto" method="POST" enctype="multipart/form-data">
+            <label for="file">Dodaj zdjecie</label>
+            <input class="file" type="file" name="file">
+            <button class="inputButton" type="submit">Wyślij</button>
+        </form>
+        </section>
+
       <section class="gallery">
         
             <div class="gallery-item">
@@ -33,6 +41,20 @@
             <div class="gallery-item">
                 <img src="images/galeria/9.jpeg" alt="Zdjęcie 9" />
             </div>
+            <?php 
+                $db = get_db();
+                $photos = $db->photos->find();
+                if (!empty($photos)){
+                foreach($photos as $photo){
+                   echo '<div class="gallery-item">
+                            <img src="images/input/'. $photo['name']. '" alt="Zdjęcie 9" />
+                        </div>
+            ' ;
+
+                }
+            }
+            ?>
+            
       </section>
 
 

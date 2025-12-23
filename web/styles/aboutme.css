@@ -209,6 +209,7 @@ main {
 }
 
 .about_me_section {
+
     background-color: #fbfff6;
     padding: 50px;
     border-radius: 30px;
@@ -271,3 +272,4 @@ footer p {
     width: 100vw;
   }
 }
+

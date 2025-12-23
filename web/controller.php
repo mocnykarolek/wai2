@@ -25,6 +25,38 @@ function answer_controller(){
 
 }
 
+function addPhoto_controller(){
+    
+    $response_photo = $_FILES['file'];
+
+    $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
+    $type = finfo_file($fileInfo, $response_photo['tmp_name']);
+
+    $allowedTypes = ['image/jpg', 'image/png', 'image/jpeg'];
+
+    if(!in_array($type, $allowedTypes)){
+        die("Błędny format pliku! Plik jaki dodałeś: " . $type);
+
+    }
+
+
+    $uploadDirectory = 'images/input/';
+    $file_name = $response_photo['name'];
+    
+    $target = $uploadDirectory . $file_name;
+
+    if(move_uploaded_file($response_photo['tmp_name'], $target)){
+        save_photo($file_name, 'test', 'Karol');
+        header("Location: /gallery");
+        exit;
+
+    }else{
+        echo "niepoprawne przeslanie pliku";
+    }
+
+    
+}
+
 
 function recipes_controller() {
     // Jeśli nie masz widoku przepisów, wyświetlimy tymczasowy tekst
@@ -32,7 +64,11 @@ function recipes_controller() {
 }
 
 // Funkcja obsługująca wysyłanie zdjęć (logikę dodamy za chwilę)
-function upload_controller() {
+function contact_controller() {
+    $response = $_POST;
+
+    save_contact($response['name'],$response['email'],$response['phone'], $response['message'],$response['preferences'],$response['consent'],$response['gender'] );
+
 
     require_once '../views/upload_view.php';
 }

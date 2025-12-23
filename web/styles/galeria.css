@@ -28,7 +28,8 @@ h2,
 h3,
 p,
 a,
-button {
+button, input, label
+ {
   color: #93bfc7;
   font-family: "poppins", sans-serif;
 }
@@ -286,4 +287,43 @@ footer p {
     height: 70vw;
   }
 
+}
+
+input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  font-size: 1vw;
+}
+
+.inputButton {
+
+  border:none;
+
+}
+
+.file button{
+
+  border: none;
+}
+
+form button {
+  padding: 10px;
+  border:none;
+  
+  border-radius: 20px;
+  font-size: large;
+  cursor: pointer;
+  transition: all 0.3s ease 0s;
+}
+
+form button:hover {
+  background-color: #b0b3b53d;
+  transform: scale(1.04);
+}
+
+form{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

@@ -8,7 +8,9 @@ $routing = [
     '/recipes' => 'przepisy_controller',
     '/form' => 'form_controller',
     '/answer' => 'answer_controller',
-    '/upload' => 'upload_controller'
+    '/upload' => 'contact_controller',
+    '/addPhoto' => 'addPhoto_controller',
+    
 
 ];
 

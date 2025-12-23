@@ -4,7 +4,7 @@ function get_db()
 {
 
     $mongo = new MongoDB\Client(
-        "mongodb://localhost:27017/wai",
+        "mongodb://127.0.0.1:27017/wai",
         [
             'username' => 'wai_web',
             'password' => 'w@i_w3b',
@@ -15,6 +15,24 @@ function get_db()
 
     return $db;
 }
+
+function save_contact($name, $email, $phone, $message, $contact, $consent, $sex){
+
+    $db = get_db();
+    $document = [
+        'name' => $name,
+        'email' => $email,
+        'phone' => $phone,
+        'message' => $message,
+        'contact' => $contact,
+        'consent' => $consent,
+        'sex' => $sex,
+
+    ];
+    $db->contacts->insertOne($document);
+
+}
+
 
 
 
@@ -27,11 +45,9 @@ function save_photo($filename, $title, $author) {
         "author" => $author,
 
 
-    ];
+    ]; 
 
-    $db->products->insertOne($dokument);
+    $db->photos->insertOne($dokument);
     
-
-    return;
 }
 
