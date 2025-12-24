@@ -33,6 +33,9 @@ function save_contact($name, $email, $phone, $message, $contact, $consent, $sex)
 
 }
 
+function addNewUser(){
+    $_SESSION['user'] = 'n';
+}
 
 
 

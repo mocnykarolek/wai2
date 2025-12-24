@@ -10,6 +10,11 @@ $routing = [
     '/answer' => 'answer_controller',
     '/upload' => 'contact_controller',
     '/addPhoto' => 'addPhoto_controller',
+    '/logout' => 'logout_controller',
+    '/loginpage' => 'loginpage_controller',
+    '/login' => 'login_controller',
+    
+    
     
 
 ];

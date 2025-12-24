@@ -25,6 +25,25 @@ function answer_controller(){
 
 }
 
+function logout_controller(){
+
+    session_destroy();
+    header('Location: /home');
+}
+
+function loginpage_controller(){
+
+    require_once '../views/loginpage.php';
+
+}
+
+function login_controller(){
+
+    addNewUser();
+    header('Location: /home');
+
+}
+
 function addPhoto_controller(){
     
     $response_photo = $_FILES['file'];

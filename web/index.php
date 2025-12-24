@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
@@ -14,6 +15,8 @@ $action = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $action = str_replace('/index.php', '', $action);
 
 $action = rtrim($action, '/');
+
+
 
 if (empty($action)) {
     $action = '/';

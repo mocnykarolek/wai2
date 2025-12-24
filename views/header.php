@@ -33,6 +33,15 @@
           <li><a href="/recipes">Przepisy</a></li>
           <li><a href="/gallery">Galeria</a></li>
           <li><a href="/aboutme">O mnie</a></li>
+          <?php 
+            
+          if(isset($_SESSION['user'])){
+            echo '<li><a href=".'. '/logout' .'">'. 'Logout'.'</a></li>';
+          } else{
+            echo '<li><a href=".'. '/loginpage' .'">'. 'Login'.'</a></li>';
+          }
+            ?>
+          
         </ul>
       </nav>
 
