@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     
     <link rel="icon" type="image/x-icon" href="../images/logo.png" />
-    
+    <link rel="stylesheet" href="styles/header.css" /> 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -21,7 +21,9 @@
         <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
   </head>
   <body>
+    
     <header class="header_class">
+      
       <a href="/home">
         <div class="logo">
           <img src="images/logo.png" alt="Logo" width="500" height="500" />
@@ -35,7 +37,7 @@
           <li><a href="/aboutme">O mnie</a></li>
           <?php 
             
-          if(isset($_SESSION['user'])){
+          if(isset($_SESSION['username'])){
             echo '<li><a href=".'. '/logout' .'">'. 'Logout'.'</a></li>';
           } else{
             echo '<li><a href=".'. '/loginpage' .'">'. 'Login'.'</a></li>';

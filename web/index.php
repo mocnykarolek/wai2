@@ -9,6 +9,7 @@ require_once '../../vendor/autoload.php';
 require_once 'business.php';
 require_once 'controller.php';
 require_once 'routing.php';
+require_once 'functions.php';
 
 $action = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 

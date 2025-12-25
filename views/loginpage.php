@@ -2,15 +2,22 @@
  <main>
       <section class="about_me_section">
         <h2>Login / Register</h2>
+        <?php if (isset($status)): ?>
+        <div style="color: red; border: 1px solid red; padding: 10px; margin-bottom: 10px;">
+            <?= htmlspecialchars($status) ?>
+        </div>
+      <?php endif; ?>
         <section class="form">
-        <form action="/login" method="POST">
+        <form action="/signup" method="POST">
+            <label for="email">Email</label>
+            <input type="email" name="email">
             <label for="username">Username</label>
-            <input type="username">
+            <input type="username" name="username">
             <label for="password">Password</label>
-            <input type="password">
+            <input type="password" name="password">
             <section class="submits buttons">
-            <button type="register">Register</button>
-            <button type="login">Login</button>
+            <button type="signup" value="register" name="signup">Register</button>
+            <button type="signup" value="login" name="signup">Login</button>
             </section>
         </form>
 

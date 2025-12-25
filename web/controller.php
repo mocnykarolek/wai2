@@ -37,24 +37,53 @@ function loginpage_controller(){
 
 }
 
-function login_controller(){
-
-    addNewUser();
-    header('Location: /home');
+function signup_controller(){
+    if($_POST['signup'] === 'register'){
+        addNewUser();
+    }
+    else if($_POST['signup'] === 'login'){
+        loginAuth();
+    }
+    
+    
 
 }
 
 function addPhoto_controller(){
-    
+
+    if(!isset($_SESSION['username'])){
+        $status = "Musisz być zalogowany aby móc dodać zdjęcie!";
+        require_once '../views/galeria.php';
+        return;
+    }
+
+
     $response_photo = $_FILES['file'];
+    $response_title = $_POST['title'];
+    $response_visibility = $_POST['visibility'];
+
+    if($response_photo['error'] === UPLOAD_ERR_NO_FILE){
+        $status = "Nie dodałeś pliku!";
+        require_once '../views/upload_view.php';
+        return;
+    }
 
     $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
     $type = finfo_file($fileInfo, $response_photo['tmp_name']);
 
-    $allowedTypes = ['image/jpg', 'image/png', 'image/jpeg'];
+    $allowedTypes = ['image/jpeg', 'image/png'];
+
+    if($response_photo['size'] > 1048576){
+        $status = "Plik jest za duży! Maksymalnie 1MB.";
+        require_once '../views/upload_view.php';
+        return;
+
+    }
 
     if(!in_array($type, $allowedTypes)){
-        die("Błędny format pliku! Plik jaki dodałeś: " . $type);
+        $error = "Niedozwolony format! Tylko JPG i PNG.";
+        require_once '../views/upload_view.php';
+        return;
 
     }
 
@@ -62,15 +91,22 @@ function addPhoto_controller(){
     $uploadDirectory = 'images/input/';
     $file_name = $response_photo['name'];
     
-    $target = $uploadDirectory . $file_name;
+    $ext = pathinfo($file_name, PATHINFO_EXTENSION);
+    $photoName = uniqid() . '.' . $ext;
+
+    $target = $uploadDirectory . $photoName;
+    $thumbnailPath = $uploadDirectory . 't_' . $photoName;
 
     if(move_uploaded_file($response_photo['tmp_name'], $target)){
-        save_photo($file_name, 'test', 'Karol');
+        save_photo($file_name, $response_title, $_SESSION['username'], $response_visibility);
+        generateThumbnail($target, $thumbnailPath, $type);
+
         header("Location: /gallery");
         exit;
 
     }else{
-        echo "niepoprawne przeslanie pliku";
+        $status = "Przesyłanie nie powidło się!";
+        header("Location: /gallery");
     }
 
     

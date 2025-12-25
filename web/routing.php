@@ -12,7 +12,7 @@ $routing = [
     '/addPhoto' => 'addPhoto_controller',
     '/logout' => 'logout_controller',
     '/loginpage' => 'loginpage_controller',
-    '/login' => 'login_controller',
+    '/signup' => 'signup_controller',
     
     
     

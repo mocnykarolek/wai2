@@ -1,11 +1,31 @@
 <link rel="stylesheet" href="styles/galeria.css" />
 <main>
         <h2>Galeria inspiracji</h2>
+        <?php if (isset($status)): ?>
+            <div class="status">
+                <?= htmlspecialchars($status) ?>
+            </div>
+            
+        
+      <?php endif; ?>
         <section class="flexContainer">
         <form action="/addPhoto" method="POST" enctype="multipart/form-data">
+            <label for="title">Tytuł  </label>
+            <input type="text" name="title">
+
             <label for="file">Dodaj zdjecie</label>
             <input class="file" type="file" name="file">
+            <div>
+              <input type="radio" name="visibility" id="publicze" value="public" required />
+              <label for="mezczyzna">public</label>
+            </div>
+
+            <div>
+              <input type="radio" name="visibility" id="prywatne" value="private" required />
+              <label for="kobieta">private</label>
+            </div>
             <button class="inputButton" type="submit">Wyślij</button>
+            
         </form>
         </section>
 
