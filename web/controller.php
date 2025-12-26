@@ -26,8 +26,11 @@ function answer_controller(){
 }
 
 function logout_controller(){
+    $_SESSION = [];
 
     session_destroy();
+    $params = session_get_cookie_params();
+    setcookie(session_name(), "", time() - 42000, $params['path'], $params["domain"],$params["secure"], $params["httponly"]);
     header('Location: /home');
 }
 
@@ -64,7 +67,7 @@ function addPhoto_controller(){
 
     if($response_photo['error'] === UPLOAD_ERR_NO_FILE){
         $status = "Nie dodałeś pliku!";
-        require_once '../views/upload_view.php';
+        require_once '../views/galeria.php';
         return;
     }
 
@@ -75,14 +78,14 @@ function addPhoto_controller(){
 
     if($response_photo['size'] > 1048576){
         $status = "Plik jest za duży! Maksymalnie 1MB.";
-        require_once '../views/upload_view.php';
+        require_once '../views/galeria.php';
         return;
 
     }
 
     if(!in_array($type, $allowedTypes)){
         $error = "Niedozwolony format! Tylko JPG i PNG.";
-        require_once '../views/upload_view.php';
+        require_once '../views/galeria.php';
         return;
 
     }
@@ -98,7 +101,7 @@ function addPhoto_controller(){
     $thumbnailPath = $uploadDirectory . 't_' . $photoName;
 
     if(move_uploaded_file($response_photo['tmp_name'], $target)){
-        save_photo($file_name, $response_title, $_SESSION['username'], $response_visibility);
+        save_photo($photoName, $response_title, $_SESSION['username'], $response_visibility);
         generateThumbnail($target, $thumbnailPath, $type);
 
         header("Location: /gallery");

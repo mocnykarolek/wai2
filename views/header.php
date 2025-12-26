@@ -21,8 +21,15 @@
         <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
   </head>
   <body>
-    
+    <?php if (isset($_SESSION['username'])): ?>
+    <section class="user">
+      
+      <img src="images/users_avatars/<?php echo  $_SESSION['avatarfile']; ?>" alt="Logo" width="50" height="50" />
+      <h3><?php echo  $_SESSION['username']; ?></h3>
+    </section>
+    <?php endif; ?>
     <header class="header_class">
+      
       
       <a href="/home">
         <div class="logo">

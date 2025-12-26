@@ -61,19 +61,28 @@
             <div class="gallery-item">
                 <img src="images/galeria/9.jpeg" alt="Zdjęcie 9" />
             </div>
-            <?php 
-                $db = get_db();
-                $photos = $db->photos->find();
-                if (!empty($photos)){
-                foreach($photos as $photo){
-                   echo '<div class="gallery-item">
-                            <img src="images/input/'. $photo['name']. '" alt="Zdjęcie 9" />
-                        </div>
-            ' ;
+                <?php 
+                    $db = get_db();
+                    $photos = $db->photos->find();
 
+                    $currentUser = $_SESSION['username'] ?? null;
+                    if (!empty($photos)){
+                    foreach($photos as $photo){
+                        if($photo['visibility'] === 'public'){
+                    echo '<div class="gallery-item">
+                                <img src="images/input/' . 't_' . $photo['filename'] . '" alt="Zdjęcie 9" />
+                            </div>
+                ' ; 
+                        } elseif($photo['visibility'] === 'private' && $photo['author'] === $currentUser){
+                            echo '<div class="gallery-item">
+                                <img src="images/input/' . 't_' . $photo['filename'] . '" alt="Zdjęcie 9" />
+                            </div>
+                ' ;
+                        }
+
+                    }
                 }
-            }
-            ?>
+                ?>
             
       </section>
 

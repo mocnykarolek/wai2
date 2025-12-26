@@ -34,48 +34,107 @@ function save_contact($name, $email, $phone, $message, $contact, $consent, $sex)
 }
 
 function addNewUser(){
-
-
     $db = get_db();
-    
-    $hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
+    // 1. Najpierw odbieramy dane
     $query = [
         'email' => $_POST['email'],
         'username' => $_POST['username'],
-        'password' => $hash,
+        'password' => password_hash($_POST['password'], PASSWORD_DEFAULT),
     ];
 
-    $user = $db->users->findOne(['username' => $query['username']]);
-    $email = $db->users->findOne(['email' => $query['email']]);
-
-    
-    if($user !== null){
-        $status = 'Użytkownik o takiej nazwie juz istnieje!';
-        
-        require_once '../views/loginpage.php';
-        return;
-    }
-    if($email !== null){
-        $status = 'Użytkownik z takim emailem juz istnieje!';
-        
+    if($_POST['password'] !== $_POST['rpassword']){
+        // $status = 'Hasła nie jest takie same!';
+        $status = 'Hasła nie są takie same!' ;
         require_once '../views/loginpage.php';
         return;
     }
 
-    $db->users->insertOne($query);
+    // 2. SPRAWDZANIE DUPLIKATÓW (Przeniesione na górę!)
+    // Nie ma sensu przetwarzać pliku, jeśli login jest zajęty.
+    $existingUser = $db->users->findOne(['username' => $query['username']]);
+    $existingEmail = $db->users->findOne(['email' => $query['email']]);
 
-    $_SESSION['user_id'] = $user['_id'];
-    $_SESSION['username'] = $query['username'];
-    $status = 'Utworzono konto poprawnie!';
-    header("Refresh: 3; url=/home");
+    if($existingUser !== null){
+        $status = 'Użytkownik o takiej nazwie już istnieje!';
+        require_once '../views/loginpage.php';
+        return;
+    }
+    if($existingEmail !== null){
+        $status = 'Użytkownik z takim emailem już istnieje!';
+        require_once '../views/loginpage.php';
+        return;
+    }
 
-    require_once '../views/validlogin.php';
+    // 3. OBSŁUGA PLIKU (Dopiero teraz)
+    $response_photo = $_FILES['file'];
+
+    // Walidacja błędów uploadu
+    if($response_photo['error'] === UPLOAD_ERR_NO_FILE){
+        $status = "Nie dodałeś pliku (avatar jest wymagany)!"; // lub opcjonalny - zależy od Ciebie
+        require_once '../views/loginpage.php';
+        return;
+    }
+
+    // Walidacja typu i rozmiaru
+    $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
+    $type = finfo_file($fileInfo, $response_photo['tmp_name']);
     
 
+    $allowedTypes = ['image/jpeg', 'image/png'];
 
+    if($response_photo['size'] > 1048576){
+        $status = "Plik jest za duży! Maksymalnie 1MB.";
+        require_once '../views/loginpage.php';
+        return;
+    }
+
+    if(!in_array($type, $allowedTypes)){
+        $status = "Niedozwolony format! Tylko JPG i PNG."; // Zmieniłem $error na $status dla spójności
+        require_once '../views/loginpage.php';
+        return;
+    }
+
+    // 4. PRZYGOTOWANIE ŚCIEŻKI
+    // Używamy DOCUMENT_ROOT dla pewności
+    $uploadDirectory = $_SERVER['DOCUMENT_ROOT'] . '/images/users_avatars/';
     
+    // Tworzenie folderu jeśli nie istnieje
+    if (!is_dir($uploadDirectory)) {
+        mkdir($uploadDirectory, 0777, true);
+    }
 
+    // POPRAWKA: Rozszerzenie bierzemy z PLIKU, nie z loginu
+    $ext = pathinfo($response_photo['name'], PATHINFO_EXTENSION);
+    $photoName = $query['username'] . '.' . $ext;
+    $target = $uploadDirectory . $photoName;
+
+    // 5. UPLOAD I ZAPIS
+    // POPRAWKA LOGIKI: move_uploaded_file zwraca TRUE przy sukcesie
+    if(move_uploaded_file($response_photo['tmp_name'], $target)){
+        
+        // Dodajemy nazwę avatara do zapytania
+        $query['avatar'] = $photoName;
+
+        // Wstawiamy do bazy i pobieramy wynik
+        $insertResult = $db->users->insertOne($query);
+
+        // Ustawiamy sesję (auto-login po rejestracji)
+        // Pobieramy ID nowo utworzonego rekordu
+        $_SESSION['user_id'] = $insertResult->getInsertedId();
+        $_SESSION['username'] = $query['username'];
+        $_SESSION['avatarfile'] = $photoName;
+        $status = 'Utworzono konto poprawnie!';
+        
+        // Header przed HTML!
+        header("Refresh: 3; url=/home");
+        require_once '../views/validlogin.php';
+        
+    } else {
+        $status = "Błąd serwera: Nie udało się zapisać zdjęcia!";
+        require_once '../views/loginpage.php';
+        return;
+    }
 }
 
 function loginAuth(){
@@ -114,6 +173,7 @@ function loginAuth(){
 
     $_SESSION['user_id'] = $user['_id'];
     $_SESSION['username'] = $query['username'];
+    $_SESSION['avatarfile'] = $user['avatar'];
     $status = 'Zalogowano!';
     
     header("Refresh: 3; url=/home");
