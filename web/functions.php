@@ -1,10 +1,10 @@
 <?php
 
-function generateThumbnail($src, $dest, $type) {
+function generateThumbnail($src, $dest, $type, $thum_width, $thum_height)
+{
     // 1. Wymiary zgodne z instrukcją
-    $thum_width = 200;
-    $thum_height = 125;
-    
+
+
     // 2. Pobieramy wymiary oryginału
     list($width, $height) = getimagesize($src);
 
@@ -17,7 +17,7 @@ function generateThumbnail($src, $dest, $type) {
         $source = imagecreatefromjpeg($src);
     } elseif ($type === 'image/png') {
         $source = imagecreatefrompng($src);
-        
+
         // Przezroczystość dla PNG
         imagealphablending($thumb, false);
         imagesavealpha($thumb, true);
@@ -27,10 +27,16 @@ function generateThumbnail($src, $dest, $type) {
 
     // 4. Skalowanie
     imagecopyresampled(
-        $thumb, $source, 
-        0, 0, 0, 0, 
-        $thum_width, $thum_height, 
-        $width, $height
+        $thumb,
+        $source,
+        0,
+        0,
+        0,
+        0,
+        $thum_width,
+        $thum_height,
+        $width,
+        $height
     );
 
     // 5. Zapis na dysk
@@ -41,8 +47,40 @@ function generateThumbnail($src, $dest, $type) {
     }
 
     // 6. Sprzątanie
-    imagedestroy($thumb);
-    imagedestroy($source);
+
 
     return true;
+}
+
+
+function showUsersPhotos()
+{
+    $db = get_db();
+    $photos = $db->photos->find();
+
+    $currentUser = $_SESSION['username'] ?? null;
+    $maxShownPhotos = 6;
+    $photosCount = count($photos);
+    $pageToRender = $photosCount / $maxShownPhotos;
+
+    $filter = [
+        '$or' => [
+            ['visibility' => 'public'],
+            ['visibility' => 'private', 'author' => $currentUser]
+        ]
+        ];
+
+    return $db->photos->find($filter);
+}
+
+
+
+
+function isChecked($photo){
+    $selected_photos = $_SESSION['SELECTED_PHOTOS'] ?? [];
+    
+    if(in_array($photo, $selected_photos)){
+        echo 'checked';
+    }
+    
 }

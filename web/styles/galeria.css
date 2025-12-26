@@ -196,6 +196,7 @@ main {
   justify-content: center;
   text-align: center;
   margin-top: 150px;
+  font-size: 1.2vw;
 }
 
 .back-to-top {
@@ -214,8 +215,8 @@ main {
 }
 
 .gallery {
-    display: flex;
-    flex-wrap: wrap;
+    /* display: flex;
+    flex-wrap: wrap; */
     justify-content: center;
     gap: 20px;
     padding: 40px;
@@ -327,15 +328,154 @@ form button:hover {
   transform: scale(1.04);
 }
 
-form{
+/* form{
   display: flex;
   justify-content: center;
   align-items: center;
-}
+} */
 
 .status{
   color: red; 
   border: 1px solid red; 
   padding: 10px; 
   margin-bottom: 10px;
+}
+
+
+img{
+  width: 200px;
+  height: 125px;
+
+}
+
+.gallery-item{
+  background-color: #0000001c;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.savedphotos{
+
+  display: flex;
+  color: #F6F0D7;
+  justify-content: center;
+  text-align: center;
+  margin-top: 150px;
+  font-size: 1.2vw;
+  background-color: #0000005d;
+  padding: 10px;
+  border-radius: 10px;
+
+}
+
+.gallery form section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Nadpisujemy globalny styl formularza, żeby nie ściskał zawartości */
+.gallery form {
+  display: block;
+  width: 100%;
+}
+
+
+/* form */
+
+/* Kontener centrujący formularz na stronie */
+.flexContainer {
+    display: flex;
+    justify-content: center;
+    margin: 40px 0;
+}
+
+/* Wygląd samej ramki formularza */
+.flexContainer form {
+    display: flex;
+    flex-direction: column; /* Układa elementy jeden pod drugim */
+    align-items: center;    /* Centruje elementy w poziomie */
+    gap: 15px;              /* Odstępy między elementami */
+    
+    background-color: #f4f4f4; /* Jasne tło */
+    padding: 30px;
+    border-radius: 20px;       /* Zaokrąglone rogi */
+    border: 1px solid #ccc;    /* Delikatna ramka */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* Cień pod spodem */
+    
+    width: 100%;
+    max-width: 400px; /* Maksymalna szerokość formularza */
+}
+
+/* Etykiety (Tytuł, Dodaj zdjęcie) */
+.flexContainer label {
+    font-weight: bold;
+    color: #444;
+    align-self: flex-start; /* Dosuń napisy do lewej krawędzi formularza */
+    margin-left: 10%;       /* Małe wcięcie */
+}
+
+/* Pola tekstowe i plikowe */
+.flexContainer input[type="text"],
+.flexContainer input[type="file"] {
+    width: 80%;
+    padding: 10px;
+    border: 1px solid #bbb;
+    border-radius: 50px;
+    background-color: #fff;
+    font-size: 14px;
+}
+
+/* Kontenery na przyciski radiowe (public/private) */
+.flexContainer div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 80%; /* Żeby były równo z inputami */
+    gap: 10px;  /* Odstęp między kółkiem a napisem */
+}
+
+/* Same kółka radio */
+.flexContainer input[type="radio"] {
+    width: 20px; /* Resetujemy szerokość, żeby nie były rozciągnięte */
+    margin: 0;
+    cursor: pointer;
+}
+
+/* Etykiety obok kółek (public/private) */
+.flexContainer div label {
+    margin: 0;      /* Usuwamy marginesy z ogólnego stylu label */
+    align-self: center;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+/* Przycisk Wyślij */
+.inputButton {
+    margin-top: 10px;
+    background-color: #93bfc7; /* Twój kolor przewodni */
+    color: white;
+    padding: 12px 40px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.inputButton:hover {
+    background-color: #7aa8b0;
+    transform: scale(1.05);
+}
+
+
+.saveSelected{
+
+  margin-top: 30px;
+  
+
 }

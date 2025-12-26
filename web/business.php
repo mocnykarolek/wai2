@@ -10,13 +10,14 @@ function get_db()
             'password' => 'w@i_w3b',
         ]
     );
-    
+
     $db = $mongo->wai;
 
     return $db;
 }
 
-function save_contact($name, $email, $phone, $message, $contact, $consent, $sex){
+function save_contact($name, $email, $phone, $message, $contact, $consent, $sex)
+{
 
     $db = get_db();
     $document = [
@@ -30,10 +31,10 @@ function save_contact($name, $email, $phone, $message, $contact, $consent, $sex)
 
     ];
     $db->contacts->insertOne($document);
-
 }
 
-function addNewUser(){
+function addNewUser()
+{
     $db = get_db();
 
     // 1. Najpierw odbieramy dane
@@ -41,11 +42,12 @@ function addNewUser(){
         'email' => $_POST['email'],
         'username' => $_POST['username'],
         'password' => password_hash($_POST['password'], PASSWORD_DEFAULT),
+
     ];
 
-    if($_POST['password'] !== $_POST['rpassword']){
+    if ($_POST['password'] !== $_POST['rpassword']) {
         // $status = 'Hasła nie jest takie same!';
-        $status = 'Hasła nie są takie same!' ;
+        $status = 'Hasła nie są takie same!';
         require_once '../views/loginpage.php';
         return;
     }
@@ -55,12 +57,12 @@ function addNewUser(){
     $existingUser = $db->users->findOne(['username' => $query['username']]);
     $existingEmail = $db->users->findOne(['email' => $query['email']]);
 
-    if($existingUser !== null){
+    if ($existingUser !== null) {
         $status = 'Użytkownik o takiej nazwie już istnieje!';
         require_once '../views/loginpage.php';
         return;
     }
-    if($existingEmail !== null){
+    if ($existingEmail !== null) {
         $status = 'Użytkownik z takim emailem już istnieje!';
         require_once '../views/loginpage.php';
         return;
@@ -70,7 +72,7 @@ function addNewUser(){
     $response_photo = $_FILES['file'];
 
     // Walidacja błędów uploadu
-    if($response_photo['error'] === UPLOAD_ERR_NO_FILE){
+    if ($response_photo['error'] === UPLOAD_ERR_NO_FILE) {
         $status = "Nie dodałeś pliku (avatar jest wymagany)!"; // lub opcjonalny - zależy od Ciebie
         require_once '../views/loginpage.php';
         return;
@@ -79,17 +81,17 @@ function addNewUser(){
     // Walidacja typu i rozmiaru
     $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
     $type = finfo_file($fileInfo, $response_photo['tmp_name']);
-    
+
 
     $allowedTypes = ['image/jpeg', 'image/png'];
 
-    if($response_photo['size'] > 1048576){
+    if ($response_photo['size'] > 1048576) {
         $status = "Plik jest za duży! Maksymalnie 1MB.";
         require_once '../views/loginpage.php';
         return;
     }
 
-    if(!in_array($type, $allowedTypes)){
+    if (!in_array($type, $allowedTypes)) {
         $status = "Niedozwolony format! Tylko JPG i PNG."; // Zmieniłem $error na $status dla spójności
         require_once '../views/loginpage.php';
         return;
@@ -98,7 +100,7 @@ function addNewUser(){
     // 4. PRZYGOTOWANIE ŚCIEŻKI
     // Używamy DOCUMENT_ROOT dla pewności
     $uploadDirectory = $_SERVER['DOCUMENT_ROOT'] . '/images/users_avatars/';
-    
+
     // Tworzenie folderu jeśli nie istnieje
     if (!is_dir($uploadDirectory)) {
         mkdir($uploadDirectory, 0777, true);
@@ -111,8 +113,8 @@ function addNewUser(){
 
     // 5. UPLOAD I ZAPIS
     // POPRAWKA LOGIKI: move_uploaded_file zwraca TRUE przy sukcesie
-    if(move_uploaded_file($response_photo['tmp_name'], $target)){
-        
+    if (generateThumbnail($response_photo['tmp_name'], $target, $type, 50, 50)) {
+
         // Dodajemy nazwę avatara do zapytania
         $query['avatar'] = $photoName;
 
@@ -125,11 +127,10 @@ function addNewUser(){
         $_SESSION['username'] = $query['username'];
         $_SESSION['avatarfile'] = $photoName;
         $status = 'Utworzono konto poprawnie!';
-        
+
         // Header przed HTML!
         header("Refresh: 3; url=/home");
         require_once '../views/validlogin.php';
-        
     } else {
         $status = "Błąd serwera: Nie udało się zapisać zdjęcia!";
         require_once '../views/loginpage.php';
@@ -137,10 +138,11 @@ function addNewUser(){
     }
 }
 
-function loginAuth(){
+function loginAuth()
+{
 
     $db = get_db();
-    
+
 
     $query = [
         'email' => $_POST['email'],
@@ -149,48 +151,43 @@ function loginAuth(){
     ];
 
     $user = $db->users->findOne(['username' => $query['username']]);
-    
-    
-    if($user === null){
+
+
+    if ($user === null) {
         $status = 'Nie znaleziono takiej użytkowanika!';
-        
+
         require_once '../views/loginpage.php';
         return;
     }
-    if($user['email'] !== $query['email']){
+    if ($user['email'] !== $query['email']) {
         $status = 'Błędny email!';
-        
+
         require_once '../views/loginpage.php';
         return;
     }
-    if(!password_verify($query['password'], $user['password'] )){
+    if (!password_verify($query['password'], $user['password'])) {
         $status = 'Błędne hasło!';
-        
+
         require_once '../views/loginpage.php';
         return;
     }
-    
+
 
     $_SESSION['user_id'] = $user['_id'];
     $_SESSION['username'] = $query['username'];
     $_SESSION['avatarfile'] = $user['avatar'];
+
     $status = 'Zalogowano!';
-    
+
     header("Refresh: 3; url=/home");
 
     require_once '../views/validlogin.php';
-    
-
-
-    
-
-
-
 }
 
 
 
-function save_photo($filename, $title, $author, $visibility) {
+function save_photo($filename, $title, $author, $visibility)
+{
 
     $db = get_db();
     $dokument = [
@@ -199,9 +196,59 @@ function save_photo($filename, $title, $author, $visibility) {
         "author" => $author,
         "visibility" => $visibility,
 
-    ]; 
+    ];
 
     $db->photos->insertOne($dokument);
-    
 }
 
+function load_selected()
+{
+    if (empty($_SESSION['user_id'])) {
+        $_SESSION['SELECTED_PHOTOS'] = [];
+        return;
+    }
+
+    $db = get_db();
+    $foundedPhotos = $db->saved_photos->find([
+        'user_id' => $_SESSION['user_id']
+    ]);
+    $selectedPhotos = [];
+    foreach ($foundedPhotos as $field) {
+        if (isset($field['filename'])) {
+            $selectedPhotos[] = $field['filename'];
+        }
+    }
+    $_SESSION['SELECTED_PHOTOS'] = $selectedPhotos;
+}
+
+
+
+
+function handleSelected()
+{
+    $db = get_db();
+    if (!isset($_SESSION['user_id'])) {
+        $status = "nie jetes zalogowany!";
+        header("Location: /gallery");
+        return;
+    }
+    $db->saved_photos->deleteMany([
+        'user_id' => $_SESSION['user_id']
+    ]);
+
+
+    foreach ($_POST as $key => $filename) {
+        if ($filename === 'save') {
+            continue;
+        }
+
+
+
+
+
+        $db->save_photos->insertOne([
+            'user_id' => $_SESSION['user_id'],
+            'filename' => $filename
+        ]);
+    }
+}

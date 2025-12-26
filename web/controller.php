@@ -5,6 +5,10 @@ function home_controller() {
 }
 
 function gallery_controller() {
+
+    $photos = showUsersPhotos();
+    load_selected();
+    
     require_once '../views/galeria.php';
 }
 
@@ -52,8 +56,17 @@ function signup_controller(){
 
 }
 
-function addPhoto_controller(){
+function saveSelected_controller(){
 
+
+    handleSelected();
+    header("Location: /gallery");
+    
+
+}
+
+function addPhoto_controller(){
+    $photos = showUsersPhotos();
     if(!isset($_SESSION['username'])){
         $status = "Musisz być zalogowany aby móc dodać zdjęcie!";
         require_once '../views/galeria.php';
@@ -102,7 +115,7 @@ function addPhoto_controller(){
 
     if(move_uploaded_file($response_photo['tmp_name'], $target)){
         save_photo($photoName, $response_title, $_SESSION['username'], $response_visibility);
-        generateThumbnail($target, $thumbnailPath, $type);
+        generateThumbnail($target, $thumbnailPath, $type, 200, 125);
 
         header("Location: /gallery");
         exit;
@@ -111,7 +124,7 @@ function addPhoto_controller(){
         $status = "Przesyłanie nie powidło się!";
         header("Location: /gallery");
     }
-
+    
     
 }
 
