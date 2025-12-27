@@ -113,10 +113,18 @@ function addPhoto_controller(){
     
 
     if(!in_array($type, $allowedTypes)){
-        $error = "Niedozwolony format! Tylko JPG i PNG.";
+        $status = "Niedozwolony format! Tylko JPG i PNG.";
         require_once '../views/galeria.php';
         return;
 
+    }
+
+    
+    $checkImage = getimagesize($response_photo['tmp_name']);
+    if($checkImage === false) {
+        $status = "To nie jest poprawny plik graficzny!";
+        require_once '../views/galeria.php';
+        return;
     }
 
 

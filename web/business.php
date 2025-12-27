@@ -205,6 +205,7 @@ function load_selected()
 {
     if (empty($_SESSION['user_id'])) {
         $_SESSION['SELECTED_PHOTOS'] = [];
+        $_SESSION['SELECTED_AMOUNTS'] =[];
         return;
     }
 
@@ -213,12 +214,17 @@ function load_selected()
         'user_id' => $_SESSION['user_id']
     ]);
     $selectedPhotos = [];
+    $selectedAmounts = [];
     foreach ($foundedPhotos as $field) {
-        if (isset($field['filename'])) {
+        if (isset($field['filename'])  && is_string($field['filename'])) {
             $selectedPhotos[] = $field['filename'];
+
+            $amount = isset($field['amount']) ? $field['amount'] : 1;
+            $selectedAmounts[$field['filename']] = $amount;
         }
     }
     $_SESSION['SELECTED_PHOTOS'] = $selectedPhotos;
+    $_SESSION['SELECTED_AMOUNTS'] =$selectedAmounts;
 }
 
 
@@ -250,18 +256,50 @@ function handleSelected()
     ]);
 
 
+    $amounts = isset($_POST['amounts']) ? $_POST['amounts'] : [];
+
     foreach ($_POST as $key => $filename) {
-        if ($filename === 'save') {
+        if ($filename === 'save' || $key === 'action' || $key === 'amounts') {
             continue;
         }
 
-
+        $amount = 1;
+        if(isset($amounts[$filename])){
+            $amount = (int)$amounts[$filename];
+            if ($amount < 1) $amount = 1;
+        }
 
 
 
         $db->saved_photos->insertOne([
             'user_id' => $_SESSION['user_id'],
-            'filename' => $filename
+            'filename' => $filename,
+            'amount' => $amount
         ]);
     }
+}
+
+
+function CartCount(){
+    
+
+    if(empty($_SESSION['username'])){
+        return 0;
+
+    }
+
+    $db = get_db();
+
+    $saved_photos = $db->saved_photos->find(['user_id' => $_SESSION['user_id']]);
+
+
+
+    $count =0;
+
+    foreach($saved_photos as $item){
+        $amount = isset($item['amount']) ? (int)$item['amount'] : 1;
+        $count +=$amount;
+    }
+
+    return $count;
 }

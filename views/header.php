@@ -22,10 +22,12 @@
   </head>
   <body>
     <?php if (isset($_SESSION['username'])): ?>
+      
     <section class="user">
       
       <img src="images/users_avatars/<?php echo  $_SESSION['avatarfile']; ?>" alt="Logo" width="50" height="50" />
       <h3><?php echo  $_SESSION['username']; ?></h3>
+      <a href="/savedPhotos">Koszyk <span> <?= CartCount(); ?></span></a>
     </section>
     <?php endif; ?>
     <header class="header_class">

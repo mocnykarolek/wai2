@@ -13,11 +13,14 @@
                                 <input type="checkbox" <?= isChecked($photo['filename']) ?  'checked' :  ''  ?> value="<?= htmlspecialchars($photo['filename']) ?>" name="<?= htmlspecialchars($photo['filename']) ?>">
                                 <a href="images/input/<?= htmlspecialchars($photo['filename']) ?>" target="_blank">
                                     <img src="images/input/t_<?= htmlspecialchars($photo['filename']) ?>"
-                                        alt="<?= htmlspecialchars($photo['title']) ?>" />
+                                        alt="<?= htmlspecialchars($photo['title']) ?>" /> </a>
+
                                     <h3>Title: <?= htmlspecialchars($photo['title']) ?></h3>
                                     <h4>Author: <?= htmlspecialchars($photo['author']) ?></h4>
-
-                                </a>
+                                <label>Ilość: </label>
+                                <input type="number" name="amounts[<?= htmlspecialchars($photo['filename']) ?>]" 
+               value="<?= isset($_SESSION['SELECTED_AMOUNTS'][$photo['filename']]) ? $_SESSION['SELECTED_AMOUNTS'][$photo['filename']] : 1 ?>" 
+               min="1">
 
                             </div>
                         <?php endif; ?>
