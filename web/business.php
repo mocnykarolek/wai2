@@ -129,7 +129,7 @@ function addNewUser()
         $status = 'Utworzono konto poprawnie!';
 
         // Header przed HTML!
-        header("Refresh: 3; url=/home");
+        header("Refresh: 1; url=/home");
         require_once '../views/validlogin.php';
     } else {
         $status = "Błąd serwera: Nie udało się zapisać zdjęcia!";
@@ -179,7 +179,7 @@ function loginAuth()
 
     $status = 'Zalogowano!';
 
-    header("Refresh: 3; url=/home");
+    header("Refresh: 1; url=/home");
 
     require_once '../views/validlogin.php';
 }
@@ -246,7 +246,7 @@ function handleSelected()
 
 
 
-        $db->save_photos->insertOne([
+        $db->saved_photos->insertOne([
             'user_id' => $_SESSION['user_id'],
             'filename' => $filename
         ]);

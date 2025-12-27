@@ -14,6 +14,7 @@ $routing = [
     '/loginpage' => 'loginpage_controller',
     '/signup' => 'signup_controller',
     '/saveSelected' => 'saveSelected_controller',
+    '/savedPhotos' => 'savephotosview_controller',
     
     
 

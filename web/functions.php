@@ -80,7 +80,7 @@ function isChecked($photo){
     $selected_photos = $_SESSION['SELECTED_PHOTOS'] ?? [];
     
     if(in_array($photo, $selected_photos)){
-        echo 'checked';
+        return true;
     }
-    
+    return false;
 }

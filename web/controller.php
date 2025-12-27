@@ -83,18 +83,18 @@ function addPhoto_controller(){
         require_once '../views/galeria.php';
         return;
     }
-
-    $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
-    $type = finfo_file($fileInfo, $response_photo['tmp_name']);
-
-    $allowedTypes = ['image/jpeg', 'image/png'];
-
     if($response_photo['size'] > 1048576){
         $status = "Plik jest za duży! Maksymalnie 1MB.";
         require_once '../views/galeria.php';
         return;
 
     }
+    $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
+    $type = finfo_file($fileInfo, $response_photo['tmp_name']);
+
+    $allowedTypes = ['image/jpeg', 'image/png'];
+
+    
 
     if(!in_array($type, $allowedTypes)){
         $error = "Niedozwolony format! Tylko JPG i PNG.";
@@ -128,6 +128,14 @@ function addPhoto_controller(){
     
 }
 
+function savephotosview_controller(){
+    $photos = showUsersPhotos();
+    load_selected();
+    
+    require_once '../views/savedPhotosview.php';
+
+
+}
 
 function recipes_controller() {
     // Jeśli nie masz widoku przepisów, wyświetlimy tymczasowy tekst
