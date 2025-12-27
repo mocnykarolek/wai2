@@ -35,6 +35,8 @@ require '../views/footer.php';
 
 
 
-// przerobic galerie aby wyswietlala tylko max 8 obrazkow
-// dodac checkboxy
-// wyszukiwarka ajax
+
+
+
+
+// ajax wyszkukiwarka zdjęc

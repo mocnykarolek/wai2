@@ -232,6 +232,19 @@ function handleSelected()
         header("Location: /gallery");
         return;
     }
+
+    if (isset($_POST['action']) && $_POST['action'] === 'clear_all') {
+        
+        
+        $db->saved_photos->deleteMany([
+            'user_id' => $_SESSION['user_id']
+        ]);
+        
+        return;
+    }
+
+
+
     $db->saved_photos->deleteMany([
         'user_id' => $_SESSION['user_id']
     ]);

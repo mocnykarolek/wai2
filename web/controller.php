@@ -6,7 +6,17 @@ function home_controller() {
 
 function gallery_controller() {
 
-    $photos = showUsersPhotos();
+
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+
+    if($page <1) {
+        $page = 1;
+    }
+
+
+    $data = showUsersPhotos($page);
+    $photos = $data['photos'];
+    $totalPages = $data['pages'];
     load_selected();
     
     require_once '../views/galeria.php';
@@ -66,12 +76,18 @@ function saveSelected_controller(){
 }
 
 function addPhoto_controller(){
-    $photos = showUsersPhotos();
-    if(!isset($_SESSION['username'])){
-        $status = "Musisz być zalogowany aby móc dodać zdjęcie!";
-        require_once '../views/galeria.php';
-        return;
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+
+    if($page <1) {
+        $page = 1;
     }
+
+
+    $data = showUsersPhotos($page);
+    $photos = $data['photos'];
+    $totalPages = $data['pages'];
+
+
 
 
     $response_photo = $_FILES['file'];
@@ -113,8 +129,13 @@ function addPhoto_controller(){
     $target = $uploadDirectory . $photoName;
     $thumbnailPath = $uploadDirectory . 't_' . $photoName;
 
+    $author = $_POST['author'];
+    if($author === ''){
+        $author = 'Anonim' . uniqid();
+    }
+
     if(move_uploaded_file($response_photo['tmp_name'], $target)){
-        save_photo($photoName, $response_title, $_SESSION['username'], $response_visibility);
+        save_photo($photoName, $response_title, $author, $response_visibility);
         generateThumbnail($target, $thumbnailPath, $type, 200, 125);
 
         header("Location: /gallery");
@@ -129,7 +150,7 @@ function addPhoto_controller(){
 }
 
 function savephotosview_controller(){
-    $photos = showUsersPhotos();
+    $photos = selectedPageViewPhoto();
     load_selected();
     
     require_once '../views/savedPhotosview.php';

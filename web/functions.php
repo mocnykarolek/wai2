@@ -53,15 +53,14 @@ function generateThumbnail($src, $dest, $type, $thum_width, $thum_height)
 }
 
 
-function showUsersPhotos()
+function showUsersPhotos($page)
 {
     $db = get_db();
-    $photos = $db->photos->find();
+    
 
     $currentUser = $_SESSION['username'] ?? null;
     $maxShownPhotos = 6;
-    $photosCount = count($photos);
-    $pageToRender = $photosCount / $maxShownPhotos;
+    
 
     $filter = [
         '$or' => [
@@ -69,8 +68,23 @@ function showUsersPhotos()
             ['visibility' => 'private', 'author' => $currentUser]
         ]
         ];
+    
+    $totalPhotos = $db->photos->count($filter);
 
-    return $db->photos->find($filter);
+    $pagesToRender = ceil($totalPhotos / $maxShownPhotos);
+
+    $skip = ($page -1) * $maxShownPhotos;
+    $options = [
+        'skip' => $skip,
+        'limit' => $maxShownPhotos,
+    ];
+
+    $photos = $db->photos->find($filter, $options);
+
+    return [
+    'photos' => $photos,
+    'pages' => $pagesToRender
+    ];
 }
 
 
