@@ -33,7 +33,7 @@
             <label for="password">Password</label>
             <input type="password" name="password">
             <label for="rpassword">Confirm Password</label>
-            <input type="rpassword" name="rpassword">
+            <input type="password" name="rpassword">
             <label for="file">Dodaj Avatar</label>
             <input class="file" type="file" name="file">
             <section class="submits buttons">

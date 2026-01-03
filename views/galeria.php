@@ -18,13 +18,14 @@
             <input class="file" type="file" name="file">
             <div>
                 <input type="radio" name="visibility" id="publicze" value="public" required />
-                <label for="mezczyzna">public</label>
+                <label for="public">public</label>
             </div>
-
+            <?php if (isset($_SESSION['username'])): ?>
             <div>
                 <input type="radio" name="visibility" id="prywatne" value="private" required />
-                <label for="kobieta">private</label>
+                <label for="private">private</label>
             </div>
+            <?php endif; ?>
             <button class="inputButton" type="submit">Wyślij</button>
 
         </form>
