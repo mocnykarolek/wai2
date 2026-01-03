@@ -33,11 +33,7 @@ function przepisy_controller() {
     require_once '../views/przepisy.php';
 }
 
-function answer_controller(){
 
-    echo "niggerr";
-
-}
 
 function logout_controller(){
     $_SESSION = [];
@@ -94,11 +90,23 @@ function addPhoto_controller(){
     $response_title = $_POST['title'];
     $response_visibility = $_POST['visibility'];
 
-    if($response_photo['error'] === UPLOAD_ERR_NO_FILE){
-        $status = "Nie dodałeś pliku!";
+    if ($response_photo['error'] !== UPLOAD_ERR_OK) {
+        switch ($response_photo['error']) {
+            case UPLOAD_ERR_NO_FILE:
+                $status = "Nie wybrano pliku!";
+                break;
+            case UPLOAD_ERR_INI_SIZE:
+            case UPLOAD_ERR_FORM_SIZE:
+                $status = "Plik jest za duży dla serwera (przekracza upload_max_filesize)!";
+                break;
+            default:
+                $status = "Wystąpił błąd przesyłania: kod " . $response_photo['error'];
+                break;
+        }
         require_once '../views/galeria.php';
-        return;
+        return; 
     }
+
     if($response_photo['size'] > 1048576){
         $status = "Plik jest za duży! Maksymalnie 1MB.";
         require_once '../views/galeria.php';
@@ -166,12 +174,7 @@ function savephotosview_controller(){
 
 }
 
-function recipes_controller() {
-    // Jeśli nie masz widoku przepisów, wyświetlimy tymczasowy tekst
-    echo "<h1>Strona z przepisami w budowie</h1>"; 
-}
 
-// Funkcja obsługująca wysyłanie zdjęć (logikę dodamy za chwilę)
 function contact_controller() {
     $response = $_POST;
 

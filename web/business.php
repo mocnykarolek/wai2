@@ -37,7 +37,7 @@ function addNewUser()
 {
     $db = get_db();
 
-    // 1. Najpierw odbieramy dane
+    
     $query = [
         'email' => $_POST['email'],
         'username' => $_POST['username'],
@@ -46,14 +46,13 @@ function addNewUser()
     ];
 
     if ($_POST['password'] !== $_POST['rpassword']) {
-        // $status = 'Hasła nie jest takie same!';
+        
         $status = 'Hasła nie są takie same!';
         require_once '../views/loginpage.php';
         return;
     }
 
-    // 2. SPRAWDZANIE DUPLIKATÓW (Przeniesione na górę!)
-    // Nie ma sensu przetwarzać pliku, jeśli login jest zajęty.
+    
     $existingUser = $db->users->findOne(['username' => $query['username']]);
     $existingEmail = $db->users->findOne(['email' => $query['email']]);
 
@@ -68,17 +67,28 @@ function addNewUser()
         return;
     }
 
-    // 3. OBSŁUGA PLIKU (Dopiero teraz)
+    
     $response_photo = $_FILES['file'];
 
-    // Walidacja błędów uploadu
-    if ($response_photo['error'] === UPLOAD_ERR_NO_FILE) {
-        $status = "Nie dodałeś pliku (avatar jest wymagany)!"; // lub opcjonalny - zależy od Ciebie
-        require_once '../views/loginpage.php';
-        return;
+    
+    if ($response_photo['error'] !== UPLOAD_ERR_OK) {
+        switch ($response_photo['error']) {
+            case UPLOAD_ERR_NO_FILE:
+                $status = "Nie wybrano pliku!";
+                break;
+            case UPLOAD_ERR_INI_SIZE:
+            case UPLOAD_ERR_FORM_SIZE:
+                $status = "Plik jest za duży dla serwera (przekracza upload_max_filesize)!";
+                break;
+            default:
+                $status = "Wystąpił błąd przesyłania: kod " . $response_photo['error'];
+                break;
+        }
+        require_once '../views/galeria.php';
+        return; 
     }
 
-    // Walidacja typu i rozmiaru
+    
     $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
     $type = finfo_file($fileInfo, $response_photo['tmp_name']);
 
@@ -92,43 +102,40 @@ function addNewUser()
     }
 
     if (!in_array($type, $allowedTypes)) {
-        $status = "Niedozwolony format! Tylko JPG i PNG."; // Zmieniłem $error na $status dla spójności
+        $status = "Niedozwolony format! Tylko JPG i PNG."; 
         require_once '../views/loginpage.php';
         return;
     }
 
-    // 4. PRZYGOTOWANIE ŚCIEŻKI
-    // Używamy DOCUMENT_ROOT dla pewności
+    
     $uploadDirectory = $_SERVER['DOCUMENT_ROOT'] . '/images/users_avatars/';
 
-    // Tworzenie folderu jeśli nie istnieje
+    
     if (!is_dir($uploadDirectory)) {
         mkdir($uploadDirectory, 0777, true);
     }
 
-    // POPRAWKA: Rozszerzenie bierzemy z PLIKU, nie z loginu
+    
     $ext = pathinfo($response_photo['name'], PATHINFO_EXTENSION);
     $photoName = $query['username'] . '.' . $ext;
     $target = $uploadDirectory . $photoName;
 
-    // 5. UPLOAD I ZAPIS
-    // POPRAWKA LOGIKI: move_uploaded_file zwraca TRUE przy sukcesie
+    
     if (generateThumbnail($response_photo['tmp_name'], $target, $type, 50, 50)) {
 
-        // Dodajemy nazwę avatara do zapytania
+        
         $query['avatar'] = $photoName;
 
-        // Wstawiamy do bazy i pobieramy wynik
+        
         $insertResult = $db->users->insertOne($query);
 
-        // Ustawiamy sesję (auto-login po rejestracji)
-        // Pobieramy ID nowo utworzonego rekordu
+        
         $_SESSION['user_id'] = $insertResult->getInsertedId();
         $_SESSION['username'] = $query['username'];
         $_SESSION['avatarfile'] = $photoName;
         $status = 'Utworzono konto poprawnie!';
 
-        // Header przed HTML!
+        
         header("Refresh: 1; url=/home");
         require_once '../views/validlogin.php';
     } else {

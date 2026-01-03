@@ -36,7 +36,3 @@ require '../views/footer.php';
 
 
 
-
-
-
-// ajax wyszkukiwarka zdjęc
