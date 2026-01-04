@@ -310,3 +310,23 @@ function CartCount(){
 
     return $count;
 }
+
+function selectedPageViewPhoto()
+{
+    $db = get_db();
+    $photos = $db->photos->find();
+
+    $currentUser = $_SESSION['username'] ?? null;
+    $maxShownPhotos = 6;
+    $photosCount = count($photos);
+    $pageToRender = $photosCount / $maxShownPhotos;
+
+    $filter = [
+        '$or' => [
+            ['visibility' => 'public'],
+            ['visibility' => 'private', 'author' => $currentUser]
+        ]
+        ];
+
+    return $db->photos->find($filter);
+}

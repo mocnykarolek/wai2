@@ -24,7 +24,7 @@ if (empty($action)) {
 }
 
 
-echo $action;
+
 require_once '../views/header.php';
 
 
